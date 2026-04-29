@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #1a1411; /* espresso-black brown */
+  --color-surface: #241c18; /* dark roast */
+  --color-primary: #3b2b24; /* coffee bean */
+  --color-primary-foreground: #f3ebe2; /* oat milk */
+
+  --color-secondary: #4f5d3a; /* moss green */
+  --color-secondary-foreground: #f5f3ea; /* warm cream */
+
+  --color-muted: #8f8175; /* warm taupe */
+  --color-muted-foreground: #d7c8ba; /* latte foam */
+
+  --color-highlight: #d89b3c; /* caramel accent */
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-background);
+    font-family: "Inter", sans-serif;
+  }
+}
+
+@layer components {
+  /* for unsupported browsers, resort to normal rounded-3xl tailwind rounding */
+  .squircle {
+    border-radius: 1.5rem;
+  }
+
+  /* for supported browsers, use squircle corner shape */
+  @supports (corner-shape: squircle) {
+    .squircle {
+      border-radius: 3rem; /* rounded-3xl is 1.5rem for corner-type: round. advised to double this for squircle. */
+      corner-shape: squircle;
+    }
+  }
+
+  .glass {
+    background-color: color-mix(in srgb, var(--color-surface) 50%, transparent);
+    backdrop-filter: blur(16px);
+    box-shadow: inset 0 0 0 1px
+      color-mix(in srgb, var(--color-border) 50%, transparent);
+  }
+
+  .glass-strong {
+    background-color: color-mix(in srgb, var(--color-surface) 80%, transparent);
+    backdrop-filter: blur(24px);
+    box-shadow: inset 0 0 0 1px
+      color-mix(in srgb, var(--color-border) 60%, transparent);
+  }
+
+  .text-glow {
+    color: red;
+    text-shadow: 0 0 30px
+      color-mix(in srgb, var(--color-primary) 50%, transparent);
+  }
+}
+
+@layer utilities {
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+      filter: blur(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+  }
+
+  @keyframes slow-drift {
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+    25% {
+      transform: translate(20px, -30px);
+    }
+    50% {
+      transform: translate(-15px, -20px);
+    }
+    75% {
+      transform: translate(30px, 10px);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.25s ease-in-out both;
+  }
+}
