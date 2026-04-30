@@ -11,6 +11,7 @@ import { openrouter } from "./agentConfig";
 import Hero from "./layout/Hero";
 import heroImg from "./assets/beans2.jpg";
 import { ntfyUuid } from "./config";
+import Caroussel from "./components/Caroussel";
 
 const sendOrder = async (order: Drink) => {
   const res = await fetch(`https://ntfy.sh/${ntfyUuid}`, {
@@ -73,6 +74,15 @@ export default function App() {
       />
       <main>
         <Hero id="hero" imgSrc={heroImg} />
+
+        {/* Caroussel */}
+        <Caroussel>
+          {coffeeTypes.map((coffee) => (
+            <span key={coffee.id}>{coffee.title},</span>
+          ))}
+        </Caroussel>
+
+        {/* Drink cards */}
         <CardContainer className="pt-24">
           {coffeeTypes.map((coffee) => (
             <Card
