@@ -74,10 +74,9 @@ export default function App() {
         </CardContainer>
 
         {/* LLM bot: coffee recommendations */}
-        <motion.div className="bg-surface">
-          <OpenRouterAgent openRouter={openrouter} />
-        </motion.div>
+        <OpenRouterAgent openRouter={openrouter} />
       </main>
+
       <Footer socials={socials} />
     </>
   );
