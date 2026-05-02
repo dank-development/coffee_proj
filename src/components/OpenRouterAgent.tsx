@@ -1,76 +1,19 @@
-import { useState } from "react";
 import { OpenRouter } from "@openrouter/sdk";
-import type { ChatMessages } from "@openrouter/sdk/models";
-import { tools, systemPrompt, agentName, model } from "../agentConfig";
 import { Bot } from "lucide-react";
 import { motion } from "motion/react";
 import Button from "./Button";
+import { useOpenRouterAgent } from "../hooks/useOpenRouterAgent";
+import { agentName } from "../ai/agentModels";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type Props = {
   openRouter: OpenRouter;
 };
 
 export default function OpenRouterAgent({ openRouter }: Props) {
-  const [query, setQuery] = useState("");
-  const [response, setResponse] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [history, setHistory] = useState<ChatMessages[]>([
-    {
-      role: "system",
-      content: systemPrompt,
-    },
-  ]);
-
-  const queryAgent = async () => {
-    const newQuery = query.trim();
-    if (!newQuery) return;
-
-    setQuery("");
-    setLoading(true);
-    setResponse("");
-    setError("");
-
-    const userMessage: ChatMessages = {
-      role: "user",
-      content: newQuery,
-    };
-    const newHistory = [...history, userMessage];
-    setHistory(newHistory);
-
-    try {
-      const stream = await openRouter.chat.send({
-        chatRequest: {
-          model: model,
-          messages: newHistory,
-          tools: tools,
-          toolChoice: "auto",
-          stream: true,
-        },
-      });
-
-      for await (const chunk of stream) {
-        if (chunk.error) {
-          setError(chunk.error.message);
-          break;
-        }
-
-        const content = chunk.choices?.[0]?.delta?.content;
-        if (content) {
-          setResponse((prev) => prev + content);
-        }
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleQuery = async () => {
-    await queryAgent();
-    setQuery("");
-  };
+  const { query, setQuery, response, loading, error, handleQuery } =
+    useOpenRouterAgent({ openRouter });
 
   return (
     <motion.div
@@ -99,7 +42,26 @@ export default function OpenRouterAgent({ openRouter }: Props) {
       <Button onClick={handleQuery} disabled={loading} className="w-full mb-4">
         {loading ? "Thinking..." : "Send"}
       </Button>
-      <pre className="max-w-full text-wrap">{response}</pre>
+      <div className="w-full text-wrap">
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={{
+            p: ({ children }) => <p className="mb-3">{children}</p>,
+            ul: ({ children }) => (
+              <ul className="mb-3 list-disc space-y-1 pl-5">{children}</ul>
+            ),
+            ol: ({ children }) => (
+              <ol className="mb-3 list-decimal space-y-1 pl-5">{children}</ol>
+            ),
+            li: ({ children }) => <li>{children}</li>,
+            strong: ({ children }) => (
+              <strong className="font-semibold">{children}</strong>
+            ),
+          }}
+        >
+          {response}
+        </ReactMarkdown>
+      </div>
       {error && <p className="text-500-red">{error}</p>}
     </motion.div>
   );
