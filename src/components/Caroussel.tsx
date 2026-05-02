@@ -9,7 +9,7 @@ type Props = {
 export default function Caroussel({
   children,
   className,
-  animationTime = 20,
+  animationTime = 120,
 }: Props) {
   const items = Children.toArray(children);
   const duplicatedItems = [...items, ...items];
