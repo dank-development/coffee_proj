@@ -26,11 +26,10 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
 
       - name: Copy build files (/dist) to nginx ws host
-        # delete old files first, then copy new ones
+        # use rsync to delete old files first. also copies just changes, so deployment is faster compared to using scp.
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "rm -rf /srv/docker/nginx_ws_proj/site*"
-          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -r ./dist/* \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/srv/docker/nginx_ws_proj/site/
+          rsync -av --delete -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
+            ./dist/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/srv/docker/nginx_ws_proj/site/
 
       - name: Restart Docker container on nginx ws host
         run: |
