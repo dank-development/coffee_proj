@@ -19,13 +19,33 @@ jobs:
       - run: npm ci
       - run: npm run build
 
-      - name: Deploy build files
+      - name: Setup SSH key
         run: |
-          mkdir -p ~/node-app
-          cp -r ./dist/* ~/node-app
-          
-      - name: Restart Docker container
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Copy build files (/dist) to nginx ws host
         run: |
+          scp -i ~/.ssh/id_rsa -r ./dist/* \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/node-app/
+
+      - name: Restart Docker container on nginx ws host
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
           cd ~/docker_compose/nginx_ws
           docker compose down
           docker compose up -d
+          "
+
+# if deploying on the runner (im using my debian vm for docker containers):
+      #- name: Deploy build files
+      #  run: |
+       #   mkdir -p ~/node-app
+      #    cp -r ./dist/* ~/node-app
+          
+    #  - name: Restart Docker container
+   #     run: |
+     #     cd ~/docker_compose/nginx_ws
+    #      docker compose down
+     #     docker compose up -d
