@@ -26,9 +26,11 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
 
       - name: Copy build files (/dist) to nginx ws host
+        # delete old files first, then copy new ones
         run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "rm -rf /srv/docker/nginx_ws_proj/site*"
           scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -r ./dist/* \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/node-app/
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/srv/docker/nginx_ws_proj/site/
 
       - name: Restart Docker container on nginx ws host
         run: |
