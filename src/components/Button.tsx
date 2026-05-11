@@ -19,39 +19,30 @@ type Props = {
 };
 
 const baseClasses =
-  "relative overflow-hidden rounded-full font-semibold bg-highlight text-primary-foreground shadow";
+  "rounded-full font-semibold bg-highlight text-primary-foreground shadow disabled:cursor-wait";
 
-export const Button = ({
-  className,
+export default function Button({
+  className = "",
   size = "md",
   children,
   disabled,
   onClick,
-}: Props) => {
-  const classes = `${baseClasses} ${sizes[size]} ${className ?? ""}`;
+}: Props) {
+  const classes = `${baseClasses} ${sizes[size]} ${className}`;
 
   return (
     <motion.button
       className={classes}
       disabled={disabled}
       onClick={onClick}
-      whileHover={{
-        scale: 1.05,
-        cursor: "pointer",
-        // color: "black",
-        // backgroundColor: "var(--color-highlight-hover)",
-      }}
-      whileTap={{
-        scale: 0.95,
-      }}
-      initial={{ y: -10, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      exit={{ y: -10, opacity: 0 }}
+      initial={{ y: -10, opacity: 0, scale: 1 }}
+      animate={{ y: 0, opacity: 1, scale: 1 }}
+      exit={{ y: -10, opacity: 0, scale: 1 }}
+      whileHover={!disabled ? { scale: 1.05 } : { scale: 1 }}
+      whileTap={!disabled ? { scale: 0.95 } : { scale: 1 }}
       transition={{ type: "spring", stiffness: 300, damping: 15 }}
     >
       {children}
     </motion.button>
   );
-};
-
-export default Button;
+}
