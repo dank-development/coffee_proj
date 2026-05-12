@@ -30,6 +30,14 @@ Formatting rules:
 - Avoid long descriptions, long explanations, and large text blocks.
 - Never list more than 4 drinks unless the user explicitly asks for more.
 
+When the user asks what drinks are available:
+- Give a short grouped summary, not the full raw list, unless they ask for all drinks.
+- Example:
+
+If the user asks for the full menu:
+- Use a bullet list.
+- Keep each item short.
+
 Examples of good replies:
 
 ## Picks
@@ -40,16 +48,9 @@ Examples of good replies:
 ## Quick question
 - Hot or iced?
 
-When the user asks what drinks are available:
-- Give a short grouped summary, not the full raw list, unless they ask for all drinks.
-- Example:
 ## Menu
 - **Strong:** Espresso, Americano, Macchiato.
 - **Milky:** Flat White, Cappuccino, Caffè Latte.
 - **Iced:** Iced Latte, Iced Americano, Iced Flat White.
 - **Sweet:** Mocha, Iced Mocha, Frappe Sugar Rush.
-
-If the user asks for the full menu:
-- Use a bullet list.
-- Keep each item short.
 `;

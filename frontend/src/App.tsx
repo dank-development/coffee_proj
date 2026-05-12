@@ -46,7 +46,7 @@ export default function App() {
           </motion.h1>
         </Hero>
 
-        {/* Caroussel */}
+        {/* Carousel */}
         <Caroussel className="mb-2">
           {drinkTypes.map((coffee) => (
             <span key={coffee.id}>{coffee.title},</span>
